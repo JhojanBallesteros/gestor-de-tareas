@@ -1,0 +1,36 @@
+<c-card>
+  <c-card-header>
+    <h5 cCardTitle>Listado de Tareas</h5>
+    <button class="me-2" cButton (click)="filtrarTareas(true)">Ver Completadas</button>
+    <button cButton (click)="filtrarTareas(false)">Ver Pendientes</button>
+  </c-card-header>
+  <c-card-body>
+
+    <c-row [gutter]="4" class="mb-3" [md]="3" [xs]="1">
+      <c-col *ngFor="let tarea of tareas$ | async; let i = index">
+        <c-card class="h-100">
+
+          <c-card-body>
+            <h3>{{ tarea.nombre }} - {{ tarea.fechaLimite | date }}</h3>
+            <div *ngIf="!tarea.completada">
+              <button cButton (click)="completarTarea(i)">Marcar como Completada</button>
+            </div>
+            <div *ngIf="tarea.completada">Tarea Completada</div>
+
+            <h4>Personas Asignadas:</h4>
+            <ul>
+              <li *ngFor="let persona of tarea.personas">
+                {{ persona.nombre }} ({{ persona.edad }} años)
+                <ul>
+                  <li *ngFor="let habilidad of persona.habilidades">{{ habilidad }}</li>
+                </ul>
+              </li>
+            </ul>
+
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-card-body>
+
+</c-card>
