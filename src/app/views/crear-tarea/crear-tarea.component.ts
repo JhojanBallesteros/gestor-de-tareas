@@ -19,37 +19,41 @@ export class CrearTareaComponent {
 
   constructor(private fb: FormBuilder, private tareasService: TareasService) {
 
-    const hoy = new Date();
+    let hoy = new Date();
     this.minDate = hoy.toISOString().split('T')[0];
     this.tareaForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(5)]],
-      fechaLimite: ['', [Validators.required, validaciones.fechaLimiteValidador.bind(this)]],
+      fechaLimite: [hoy, [Validators.required, validaciones.fechaLimiteValidador.bind(this)]],
+      completada: [false],
       personas: this.fb.array<Persona>([], [Validators.required, validaciones.uniquePersonNameValidator()]),
-      completada: [false]
     });
   }
 
   isValidField(field: string): boolean | null {
-    return this.tareaForm.controls[field].errors
-      && this.tareaForm.controls[field].touched;
+    const control = this.tareaForm.get(field);
+    return control && control.errors && control.touched;
   }
 
   getFieldError(field: string): string | null {
-    if (!this.tareaForm.controls[field]) return null;
+    const control = this.tareaForm.get(field);
+    if (!control) return null;
 
-
-    const errors = this.tareaForm.controls[field].errors || {};
+    const errors = control.errors || {};
     for (const key of Object.keys(errors)) {
       switch (key) {
         case 'required':
           return 'El campo es requerido';
         case 'minlength':
           return `El campo debe tener al menos ${errors[key].requiredLength} caracteres`;
+        case 'min':
+          return `El valor mínimo es ${errors[key].min}`;
+        case 'duplicateNames':
+          return 'Este nombre ya está asignado';
         default:
           return null;
       }
     }
-    return null
+    return null;
   }
   get personas(): FormArray | any {
     return this.tareaForm.get('personas') as FormArray;
@@ -83,6 +87,9 @@ export class CrearTareaComponent {
     if (this.tareaForm.valid) {
       this.tareasService.agregarTarea(this.tareaForm.value);
       this.tareaForm.reset();
+      this.tareaForm.reset({ completada: false })
+
+
     }
   }
 }

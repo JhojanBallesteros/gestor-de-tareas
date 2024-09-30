@@ -2,10 +2,11 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 export class validaciones {
   static fechaLimiteValidador(control: AbstractControl): { [key: string]: boolean } | null {
-    const fechaSeleccionada = new Date(control.value);
+    const fechaSeleccionada = control.value === null ? new Date() : new Date(control.value);
     const fechaActual = new Date();
+    console.log(fechaSeleccionada, fechaActual);
     fechaActual.setHours(0, 0, 0, 0);
-    return fechaSeleccionada < fechaActual ? { fechaInvalida: true } : null;
+    return fechaSeleccionada <= fechaActual ? { fechaInvalida: true } : null;
   }
 
   static uniquePersonNameValidator(): ValidatorFn {

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Tarea } from 'src/app/models/task.model';
 
 
 import { TareasService } from 'src/app/services/tareas.service';
@@ -8,15 +10,17 @@ import { TareasService } from 'src/app/services/tareas.service';
   templateUrl: './listar-tareas.component.html'
 })
 export class ListarTareasComponent {
-  tareas$ = this.tareasService.tareas$;
+  tareas$: Observable<Tarea[]> = this.tareasService.tareas$;
+  filter: string = 'all';
 
   constructor(private tareasService: TareasService) { }
+
 
   completarTarea(index: number) {
     this.tareasService.marcarTareaCompletada(index);
   }
 
   filtrarTareas(completadas: boolean) {
-    return this.tareasService.filtrarTareas(completadas);
+    this.tareas$ = this.tareasService.filtrarTareas(completadas);
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { Tarea } from '../models/task.model';
 
 
@@ -22,8 +22,10 @@ export class TareasService {
   }
 
   filtrarTareas(completada: boolean) {
+    return this.tareas$.pipe(
+      map(tareas => tareas.filter(tarea => tarea.completada === completada))
+    );
 
-    return this.tareas.getValue().filter(tarea => tarea.completada === completada);
   }
 
 }

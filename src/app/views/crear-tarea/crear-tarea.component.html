@@ -5,7 +5,7 @@
   <c-card-body>
     <form [formGroup]="tareaForm" (ngSubmit)="guardarTarea()">
       <div class="mb-2">
-        <label class="me-2" for="titulo">Nombre de la Tarea</label>
+        <label class="me-2" for="nombre">Nombre de la Tarea</label>
         <input id="nombre" formControlName="nombre" />
         <div *ngIf="isValidField('nombre')" class="text-danger" style="font-size: 13px;">
           {{getFieldError('nombre')}}</div>
@@ -26,8 +26,8 @@
           <div class="mb-2">
             <label class="me-2">Nombre Completo</label>
             <input formControlName="nombre" />
-            <div *ngIf="isValidField('nombre')" class="text-danger" style="font-size: 13px;">
-              {{getFieldError('nombre')}}</div>
+            <div *ngIf="isValidField('personas.' + i + '.nombre')" class="text-danger" style="font-size: 13px;">
+              {{ getFieldError('personas.' + i + '.nombre') }}</div>
             <div class="text-danger"
               *ngIf="personas.errors && personas.errors['duplicateNames'] && personas.errors['duplicates'].includes(persona.get('nombre')?.value)">
               La persona ya está asiganada a la tarea
@@ -36,11 +36,17 @@
           <div class="mb-2">
             <label class="me-2">Edad</label>
             <input type="number" formControlName="edad" />
+            <div *ngIf="isValidField('personas.' + i + '.edad')" class="text-danger" style="font-size: 13px;">
+              {{ getFieldError('personas.' + i + '.edad') }}</div>
           </div>
 
           <div formArrayName="habilidades">
             <div class="mb-2" *ngFor="let habilidad of persona.get('habilidades')?.controls; let j = index">
               <input class="me-2" [formControlName]="j" placeholder="Habilidad" />
+              <div *ngIf="isValidField('personas.' + i + '.habilidades.' + j)" class="text-danger"
+                style="font-size: 13px;">
+                {{ getFieldError('personas.' + i + '.habilidades.' + j) }}
+              </div>
               <button cButton type="button" (click)="eliminarHabilidad(i, j)">Eliminar Habilidad</button>
             </div>
             <button class="mb-2" cButton type="button" (click)="agregarHabilidad(i)">Añadir Habilidad</button>
